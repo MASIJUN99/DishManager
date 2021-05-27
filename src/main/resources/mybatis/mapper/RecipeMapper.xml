@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.RecipeMapper">
+  <select id="selectAll" resultType="Recipe">
+    SELECT * FROM recipe;
+  </select>
+
+  <select id="selectById" resultType="Recipe">
+    SELECT * FROM recipe WHERE id=#{id}
+  </select>
+
+  <select id="selectLast" resultType="Recipe">
+    SELECT * FROM recipe WHERE id=(SELECT MAX(id) FROM recipe);
+  </select>
+
+  <select id="selectMaxId" resultType="Integer">
+    SELECT MAX(id) FROM recipe;
+  </select>
+
+  <insert id="insert" parameterType="Recipe">
+    INSERT INTO recipe(pork, beef, mutton, chicken, duck, others) VALUES (#{pork}, #{beef}, #{mutton}, #{chicken}, #{duck}, #{others})
+  </insert>
+
+  <delete id="deleteAll">
+    DELETE FROM recipe
+  </delete>
+
+  <delete id="deleteById">
+    DELETE FROM recipe WHERE id=#{id}
+  </delete>
+</mapper>

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:sqlite:dish.db
+    driver-class-name: org.sqlite.JDBC
+# 整合mybatis
+mybatis:
+  type-aliases-package: com.example.pojo
+  mapper-locations:
+    - classpath:mybatis/mapper/*.xml

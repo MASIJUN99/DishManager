@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<div th:insert="~{commons/commons::head}"></div>
+
+<body class="app">
+<div th:insert="~{commons/commons::navBar}"></div>
+
+<div class="app-wrapper">
+
+  <div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+
+      <h1 class="app-page-title">今日菜谱</h1>
+      <!-- 这里放内容！ -->
+      <div th:if="${!breakfast.isEmpty()}">
+        <h4>早餐</h4>
+        <div class="ui cards">
+          <!-- 一个卡片 -->
+          <div class="card" th:each="dish:${breakfast}">
+            <div class="content">
+              <div class="header">
+                [[${dish.getName()}]]
+              </div>
+              <div class="meta">
+                <a th:if="${dish.getCategory()==0}">荤菜</a>
+                <a th:if="${dish.getCategory()==1}">素菜</a>
+                <a th:if="${dish.getCategory()==2}">半荤半素</a>
+                <a th:if="${dish.getCategory()==3}">其他</a>
+              </div>
+              <div class="description">
+                no desc
+              </div>
+            </div>
+            <div class="extra content">
+              <div class="ui two buttons">
+                <a class="ui basic green button" href="#" data-toggle="modal" data-target="#changeModal"
+                   th:onclick="changeSend([[${date}]], 1, [[${dish.getId()}]])">修改</a>
+                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=1,url='index')}">删除</a>
+              </div>
+            </div>
+          </div>
+          <!-- 添加 -->
+          <div class="card">
+            <div class="content">
+              <div class="center aligned description">
+                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal"
+                   th:onclick="addSend([[${date}]],1);">
+                  <i class="icon plus"></i>
+                </a>
+              </div>
+              <div class="extra content">
+                <br/>
+                <br/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${!lunch.isEmpty()}">
+        <h4><br/>午餐</h4>
+        <div class="ui cards">
+          <!-- 一个卡片 -->
+          <div class="card" th:each="dish:${lunch}">
+            <div class="content">
+              <div class="header">
+                [[${dish.getName()}]]
+              </div>
+              <div class="meta">
+                <a th:if="${dish.getCategory()==0}">荤菜</a>
+                <a th:if="${dish.getCategory()==1}">素菜</a>
+                <a th:if="${dish.getCategory()==2}">半荤半素</a>
+                <a th:if="${dish.getCategory()==3}">其他</a>
+              </div>
+              <div class="description">
+                no desc
+              </div>
+            </div>
+            <div class="extra content">
+              <div class="ui two buttons">
+                <a class="ui basic green button" href="https://semantic-ui.com/">修改</a>
+                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=2,url='index')}">删除</a>
+              </div>
+            </div>
+          </div>
+          <!-- 添加 -->
+          <div class="card">
+            <div class="content">
+              <div class="center aligned description">
+                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal" th:onclick="addSend(2)">
+                  <i  class="icon plus"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${!dinner.isEmpty()}">
+        <h4><br/>晚餐</h4>
+        <div class="ui cards">
+          <!-- 一个卡片 -->
+          <div class="card" th:each="dish:${dinner}">
+            <div class="content">
+              <div class="header">
+                [[${dish.getName()}]]
+              </div>
+              <div class="meta">
+                <a th:if="${dish.getCategory()==0}">荤菜</a>
+                <a th:if="${dish.getCategory()==1}">素菜</a>
+                <a th:if="${dish.getCategory()==2}">半荤半素</a>
+                <a th:if="${dish.getCategory()==3}">其他</a>
+              </div>
+              <div class="description">
+                no desc
+              </div>
+            </div>
+            <div class="extra content">
+              <div class="ui two buttons">
+                <a class="ui basic green button" href="https://semantic-ui.com/">修改</a>
+                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=1,url='index')}">删除</a>
+              </div>
+            </div>
+          </div>
+          <!-- 添加 -->
+          <div class="card">
+            <div class="content">
+              <div class="center aligned description">
+                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal" th:onclick="addSend(3)">
+                  <i  class="icon plus"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- addDish JavaScript -->
+      <script th:inline="javascript">
+        function addSend(date, time){
+          console.log(date);
+          console.log(time);
+          $("#addDate").val(date);
+          $("#addTime").val(time);
+        }
+      </script>
+      <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+           aria-labelledby="exampleModalLabel"
+           aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <form th:action="@{/addDailyDish}" class="modal-content">
+            <div class="modal-header" >
+              <h5 class="modal-title" id="addModalLabel">添加</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body form-label">
+              <input type="date" class="form-control" id="addDate" name="addDate" value=""><br/>
+              <select class="form-control" id="addTime" name="addTime">
+                <option value="1">早餐</option>
+                <option value="2">午餐</option>
+                <option value="3">晚餐</option>
+              </select><br/>
+              <select class="form-control" id="addDishId" name="addDishId">
+                <option th:each="dish:${dishes}" th:value="${dish.getId()}">[[${dish.getName()}]]</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+              <button class="btn btn-primary" type="submit">确认</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- addDish JavaScript -->
+      <script th:inline="javascript">
+        function changeSend(date, time, dishId){
+          console.log(date);
+          console.log(time);
+          console.log(dishId);
+          $("#changeDate").val(date);
+          $("#changeTime").val(time);
+          $("#changeDishId").val(dishId);
+          $("#oldDishId").val(dishId);
+        }
+      </script>
+      <div class="modal fade" id="changeModal" tabindex="-1" role="dialog"
+           aria-labelledby="exampleModalLabel"
+           aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <form th:action="@{/changeDailyDish}" class="modal-content">
+            <div class="modal-header" >
+              <h5 class="modal-title" id="changeModalLabel">添加</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body form-label">
+              <input type="date" class="form-control" id="changeDate" name="changeDate" value=""><br/>
+              <select class="form-control" id="changeTime" name="changeTime">
+                <option value="1">早餐</option>
+                <option value="2">午餐</option>
+                <option value="3">晚餐</option>
+              </select><br/>
+              <input type="text" class="form-control" id="oldDishId" name="oldDishId" hidden>
+              <select class="form-control" id="changeDishId" name="changeDishId">
+                <option th:each="dish:${dishes}" th:value="${dish.getId()}">[[${dish.getName()}]]</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+              <button class="btn btn-primary" type="submit">确认</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+
+    </div><!--//container-fluid-->
+  </div><!--//app-content-->
+
+  <footer class="app-footer">
+    <div class="container text-center py-3">
+      <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+      <small class="copyright">Designed with <i class="fas fa-heart" style="color: #fb866a;"></i> by
+        <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a>
+        for developers</small>
+
+    </div>
+  </footer><!--//app-footer-->
+
+</div><!--//app-wrapper-->
+
+
+<!-- Javascript -->
+<script th:src="@{plugins/popper.min.js}"></script>
+<script th:src="@{plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+<!-- Charts JS -->
+<script th:src="@{plugins/chart.js/chart.min.js}"></script>
+<script th:src="@{js/index-charts.js}"></script>
+
+<!-- Page Specific JS -->
+<script th:src="@{js/app.js}"></script>
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Core plugin JavaScript-->
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+<!-- Page level custom scripts -->
+<script th:src="@{/js/demo/chart-area-demo.js}"></script>
+<script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+
+<!-- jQuery -->
+<script th:src="@{/js/jquery-3.6.0.js}"></script>
+
+<div th:insert="commons/commons::foot"></div>
+
+</body>
+</html> 
+
