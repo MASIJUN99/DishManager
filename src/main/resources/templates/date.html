@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<div th:insert="~{commons/commons::head}"></div>
+
+<body class="app">
+<div th:insert="~{commons/commons::navBar(active='cycle')}"></div>
+
+<div class="app-wrapper">
+
+  <div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+
+
+      <h1 class="app-page-title">查看日期范围的菜谱</h1>
+      <!-- 这里放内容！ -->
+      <form th:action="@{/queryBetweenTwoDates}" class="ui grid">
+        <div class="three wide column">
+          <input type="date" class="form-control" id="dateStart" name="dateStart" th:value="${dateStart==null?date:dateStart}">
+        </div>
+        <div class="three wide column">
+          <input type="date" class="form-control" id="dateEnd" name="dateEnd" th:value="${dateEnd==null?date:dateEnd}">
+        </div>
+        <div class="three wide column">
+          <button class="ui positive button" type="submit">确认</button>
+        </div>
+      </form>
+
+      <!-- 这里罗列所有天数内容 -->
+
+      <div class="ui card">
+        <div class="content">
+          <div class="right floated meta">14h</div><img class="ui avatar image" src="/images/avatar/large/elliot.jpg"> Elliot </div>
+        <div class="image">
+          <img>
+        </div>
+        <div class="content">
+    <span class="right floated">
+      <i class="heart outline like icon"></i>
+      17 likes
+    </span>
+          <i class="comment icon"></i>
+          3 comments
+        </div>
+        <div class="extra content">
+          <div class="ui large transparent left icon input">
+            <i class="heart outline icon"></i>
+            <input type="text" placeholder="Add Comment...">
+          </div>
+        </div>
+      </div>
+
+      <i>需要随机生成？</i>
+      <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#randomDish" th:onclick="randomSend()">
+        <i  class="icon plus"></i>
+      </a>
+
+      <!-- changeDish JavaScript -->
+      <script th:inline="javascript">
+        function randomSend(){
+          var dateStart = $("#dateStart").val();
+          var dateEnd = $("#dateEnd").val();
+          console.log(dateStart);
+          console.log(dateEnd);
+
+        }
+      </script>
+      <div class="modal fade" id="randomDish" tabindex="-1" role="dialog"
+           aria-labelledby="exampleModalLabel"
+           aria-hidden="true">
+        <div class="modal-dialog" role="document">
+<!--          TODO: change href-->
+          <form th:action="@{/randomDailyDishes}" class="modal-content">
+            <div class="modal-header" >
+              <h5 class="modal-title" id="randomModalLabel">添加</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body form-label">
+              <input type="date" class="form-control" id="randomDate" name="dateStr" value=""><br/>
+              <input type="text" class="form-control" id="url3" name="url" value="" hidden>
+              <div class="ui equal width grid container">
+                <!-- 早餐 -->
+                <div class="column center aligned">
+                  <div class="ui form">
+                    <h4 class="ui dividing header">早餐</h4>
+                    <div class="field">
+                      <div class="ui input focus">
+                        <input type="text" name="breakfastVegetable" placeholder="素菜数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="breakfastMeat" placeholder="荤菜数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="breakfastMixed" placeholder="半荤半素数量" required>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 午餐 -->
+                <div class="column center aligned">
+                  <div class="ui form">
+                    <h4 class="ui dividing header">午餐</h4>
+                    <div class="field">
+                      <div class="ui input focus">
+                        <input type="text" name="lunchMeat" placeholder="荤菜数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="lunchVegetable" placeholder="素菜数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="lunchMixed" placeholder="半荤半素数量" required>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 晚餐 -->
+                <div class="column center aligned">
+                  <div class="ui form">
+                    <h4 class="ui dividing header">晚餐</h4>
+                    <div class="field">
+                      <div class="ui input focus">
+                        <input type="text" name="dinnerMeat" placeholder="荤菜数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="dinnerVegetable" placeholder="素菜数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="dinnerMixed" placeholder="半荤半素数量" required>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                <button class="btn btn-primary" type="submit">确认</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+
+
+    </div><!--//container-fluid-->
+  </div><!--//app-content-->
+
+  <footer class="app-footer">
+    <div class="container text-center py-3">
+      <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+      <small class="copyright">Designed with <i class="fas fa-heart" style="color: #fb866a;"></i> by
+        <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a>
+        for developers</small>
+
+    </div>
+  </footer><!--//app-footer-->
+
+</div><!--//app-wrapper-->
+
+
+<!-- Javascript -->
+<script th:src="@{plugins/popper.min.js}"></script>
+<script th:src="@{plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+<!-- Charts JS -->
+<script th:src="@{plugins/chart.js/chart.min.js}"></script>
+<script th:src="@{js/index-charts.js}"></script>
+
+<!-- Page Specific JS -->
+<script th:src="@{js/app.js}"></script>
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Core plugin JavaScript-->
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+<!-- Page level custom scripts -->
+<script th:src="@{/js/demo/chart-area-demo.js}"></script>
+<script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+
+<!-- jQuery -->
+<script th:src="@{/js/jquery-3.6.0.js}"></script>
+
+<div th:insert="commons/commons::foot"></div>
+
+</body>
+</html> 
+

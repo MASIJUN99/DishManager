@@ -80,6 +80,14 @@ public class ViewController {
     return "week";
   }
 
+  @RequestMapping("/dateRange")
+  public String dateRange(Model model) {
+    Date date = new Date();
+    String dateStr = myDateToStringConverter.convert(date);
+    model.addAttribute("date", dateStr);
+    return "date";
+  }
+
 
 
 

@@ -78,6 +78,8 @@ public class DailyController {
 
   @GetMapping("/queryDate")
   public String queryDaily(String dateStr, Model model) {
+
+
     System.out.println(dateStr);
 
     Date date = myStringToDateConverter.convert(dateStr);
@@ -274,11 +276,71 @@ public class DailyController {
     return "redirect:/" + url;
   }
 
+  @RequestMapping("/queryBetweenTwoDates")
+  public String randomBetweenTwoDates(String dateStart, String dateEnd, Model model) {
+    Date start = myStringToDateConverter.convert(dateStart);
+    Date end = myStringToDateConverter.convert(dateEnd);
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(start);
+
+    List<List<Dish>> allBreakfast = new ArrayList<>();
+    List<List<Dish>> allLunch = new ArrayList<>();
+    List<List<Dish>> allDinner = new ArrayList<>();
+    List<String> dateList = new ArrayList<>();
+    while (cal.after(end)) {
+      Date date = cal.getTime();
+      dateList.add(myDateToStringConverter.convert(date));
+      // 获取date日期早餐列表
+      List<Daily> dailyBreakfast = dailyService.selectByDateAndTime(date, Daily.BREAKFAST);
+      List<Dish> breakfast = new ArrayList<>();
+      for (Daily daily : dailyBreakfast) {
+        breakfast.add(dishService.selectById(daily.getDish()));
+      }
+      allBreakfast.add(breakfast);
+      // 获取date日期午餐列表
+      List<Daily> dailyLunch = dailyService.selectByDateAndTime(date, Daily.LUNCH);
+      List<Dish> lunch = new ArrayList<>();
+      for (Daily daily : dailyLunch) {
+        lunch.add(dishService.selectById(daily.getDish()));
+      }
+      allLunch.add(lunch);
+      // 获取date日期晚餐列表
+      List<Daily> dailyDinner = dailyService.selectByDateAndTime(date, Daily.DINNER);
+      List<Dish> dinner = new ArrayList<>();
+      for (Daily daily : dailyDinner) {
+        dinner.add(dishService.selectById(daily.getDish()));
+      }
+      allDinner.add(dinner);
+      cal.add(Calendar.DATE, 1);
+    }
+    model.addAttribute("breakfast", allBreakfast);
+    model.addAttribute("lunch", allLunch);
+    model.addAttribute("dinner", allDinner);
+    model.addAttribute("dateList", dateList);
+    model.addAttribute("date", new Date());
+    model.addAttribute("dateStart", dateStart);
+    model.addAttribute("dateEnd", dateEnd);
+
+    return "date";
+  }
+
   /*
   TODO: 添加一下日期范围内的增加菜谱
    其实我有个想法，我在把每天的单一分类全加起来生成一个足够长的array，这个array要保证是唯一元素的，再每天分配，
    在分配前要打乱顺序！
    */
+  @RequestMapping("/randomBetweenTwoDates")
+  public String randomBetweenTwoDates(String dateStart, String dateEnd, int cycle,
+      int breakfastMeat, int breakfastVegetable, int breakfastMixed,
+      int lunchMeat, int lunchVegetable, int lunchMixed,
+      int dinnerMeat, int dinnerVegetable, int dinnerMixed,
+      String url
+  ) {
+
+
+    return "redirect:/" + url;
+  }
+
 
 
 }
