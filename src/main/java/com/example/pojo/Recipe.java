@@ -9,6 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Recipe {
 
+  public static String[] ZH_CN_NAME;
+
+  static {
+    ZH_CN_NAME = new String[]{
+        "猪肉", "牛肉", "羊肉", "鸡肉", "鸭肉", "其他",
+    };
+  }
+
+
   private Integer id      = 0;
   private Double  pork    = 0.0;  // 🐂
   private Double  beef    = 0.0;  // 🐖

@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Dish {
 
+  static public Integer VEGETABLE = 0;
+  static public Integer MEAT = 1;
+  static public Integer MIXED = 2;
+
+
   private Integer id;
   private String name;
   private Integer category;  // 0素 1荤 2半

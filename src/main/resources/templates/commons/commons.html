@@ -15,6 +15,7 @@
     <link rel="shortcut icon" th:href="@{images/favicon.ico}">
     <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+    <link th:href="@{/css/cal.css}" rel="stylesheet" type="text/css">
 
     <!-- FontAwesome JS-->
     <script defer th:src="@{plugins/fontawesome/js/all.min.js}"></script>
@@ -208,7 +209,7 @@
           <ul class="app-menu list-unstyled accordion" id="menu-accordion">
             <li class="nav-item">
               <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a class="nav-link active" href="index.html">
+              <a th:class="${active=='main'?'nav-link active':'nav-link'}" th:href="@{/index}">
 						        <span class="nav-icon">
 						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-door"
                          fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -217,12 +218,12 @@
 		  <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
 		</svg>
 						         </span>
-                <span class="nav-link-text">Overview</span>
+                <span class="nav-link-text">今日总览</span>
               </a><!--//nav-link-->
             </li><!--//nav-item-->
             <li class="nav-item">
               <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a class="nav-link" href="docs.html">
+              <a th:class="${active=='week'?'nav-link active':'nav-link'}"  th:href="@{/week}">
 						        <span class="nav-icon">
 						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-folder"
                          fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -232,12 +233,12 @@
         d="M13.81 4H2.19a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zM2.19 3A2 2 0 0 0 .198 5.181l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H2.19z"/>
 </svg>
 						         </span>
-                <span class="nav-link-text">Docs</span>
+                <span class="nav-link-text">查看日历</span>
               </a><!--//nav-link-->
             </li><!--//nav-item-->
             <li class="nav-item">
               <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a class="nav-link" href="orders.html">
+              <a th:class="${active=='someDay'?'nav-link active':'nav-link'}" th:href="@{'/queryDate?dateStr='+${date}}">
 						        <span class="nav-icon">
 						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list"
                          fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -250,7 +251,7 @@
   <circle cx="3.5" cy="10.5" r=".5"/>
 </svg>
 						         </span>
-                <span class="nav-link-text">Orders</span>
+                <span class="nav-link-text">某日菜谱</span>
               </a><!--//nav-link-->
             </li><!--//nav-item-->
             <li class="nav-item has-submenu">

@@ -3,14 +3,38 @@
 <div th:insert="~{commons/commons::head}"></div>
 
 <body class="app">
-<div th:insert="~{commons/commons::navBar(active='main')}"></div>
+<div th:insert="~{commons/commons::navBar(active='someDay')}"></div>
 
 <div class="app-wrapper">
 
   <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xl">
 
-      <h1 class="app-page-title">今日菜谱</h1>
+
+
+      <div class="ui grid">
+        <div class="three wide column">
+          <i class="angle left large icon"></i>
+          <a th:href="@{'/queryDate?dateStr='+${prev}}">上一天</a>
+        </div>
+        <div class="four wide column ">
+            <h1 class="app-page-title">[[${date}]]菜谱</h1>
+        </div>
+        <div class="three wide column">
+          <a th:href="@{'/queryDate?dateStr='+${next}}">下一天</a>
+          <i class="angle right large icon"></i>
+        </div>
+        <div class="two wide column">
+          <form class="ui action input" th:action="@{/changePeopleNum}" method="post">
+              <input type="text" name="num" id="num" placeholder="人数..." th:value="${num}">
+              <input type="text" name="date" id="date" th:value="${date}" hidden>
+              <button  class="ui button">更改人数</button>
+          </form>
+        </div>
+
+
+      </div>
+
       <!-- 这里放内容！ -->
       <div th:if="${!breakfast.isEmpty()}">
         <h4>早餐</h4>
@@ -35,7 +59,7 @@
               <div class="ui two buttons">
                 <a class="ui basic green button" href="#" data-toggle="modal" data-target="#changeModal"
                    th:onclick="changeSend([[${date}]], 1, [[${dish.getId()}]])">修改</a>
-                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=1,url='index')}">删除</a>
+                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=1,url=${url})}">删除</a>
               </div>
             </div>
           </div>
@@ -80,7 +104,7 @@
               <div class="ui two buttons">
                 <a class="ui basic green button" href="#" data-toggle="modal" data-target="#changeModal"
                    th:onclick="changeSend([[${date}]], 2, [[${dish.getId()}]])">修改</a>
-                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=2,url='index')}">删除</a>
+                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=2,url=${url})}">删除</a>
               </div>
             </div>
           </div>
@@ -88,9 +112,14 @@
           <div class="card">
             <div class="content">
               <div class="center aligned description">
-                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal" th:onclick="addSend(2)">
-                  <i class="icon plus"></i>
+                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal"
+                   th:onclick="addSend([[${date}]],2);">
+                  <i  class="icon plus"></i>
                 </a>
+              </div>
+              <div class="extra content">
+                <br/>
+                <br/>
               </div>
             </div>
           </div>
@@ -120,7 +149,7 @@
               <div class="ui two buttons">
                 <a class="ui basic green button" href="#" data-toggle="modal" data-target="#changeModal"
                    th:onclick="changeSend([[${date}]], 3, [[${dish.getId()}]])">修改</a>
-                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=1,url='index')}">删除</a>
+                <a class="ui basic red button" th:href="@{'/delDailyDish/'+${dish.getId()}(date=${date},time=3,url=${url})}">删除</a>
               </div>
             </div>
           </div>
@@ -128,11 +157,122 @@
           <div class="card">
             <div class="content">
               <div class="center aligned description">
-                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal" th:onclick="addSend(3)">
+                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#addModal"
+                   th:onclick="addSend([[${date}]],3);">
                   <i  class="icon plus"></i>
                 </a>
               </div>
+              <div class="extra content">
+                <br/>
+                <br/>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${breakfast.isEmpty() and lunch.isEmpty() and dinner.isEmpty()}">
+        <h2>啥菜也没有啊兄弟</h2>
+        <!-- 随机生成添加 -->
+        <div class="ui cards">
+          <div class="card">
+            <div class="content">
+              <div class="center aligned description">
+                <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#randomDish"
+                   th:onclick="randomSend([[${date}]]);">
+                  <i  class="icon plus"></i>
+                </a>
+              </div>
+              <div class="extra content">
+                <br/>
+                <div class="center aligned">
+                  要不要随机生成一批<br/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- changeDish JavaScript -->
+        <script th:inline="javascript">
+          function randomSend(date){
+            console.log(date);
+            $("#randomDate").val(date);
+            $("#url3").val([[${url}]])
+            console.log([[${url}]])
+          }
+        </script>
+        <div class="modal fade" id="randomDish" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <form th:action="@{/randomDailyDishes}" class="modal-content">
+              <div class="modal-header" >
+                <h5 class="modal-title" id="randomModalLabel">添加</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body form-label">
+                <input type="date" class="form-control" id="randomDate" name="dateStr" value=""><br/>
+                <input type="text" class="form-control" id="url3" name="url" value="" hidden>
+                <div class="ui equal width grid container">
+                  <!-- 早餐 -->
+                  <div class="column center aligned">
+                    <div class="ui form">
+                      <h4 class="ui dividing header">早餐</h4>
+                      <div class="field">
+                        <div class="ui input focus">
+                          <input type="text" name="breakfastVegetable" placeholder="素菜数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="breakfastMeat" placeholder="荤菜数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="breakfastMixed" placeholder="半荤半素数量" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 午餐 -->
+                  <div class="column center aligned">
+                    <div class="ui form">
+                      <h4 class="ui dividing header">午餐</h4>
+                      <div class="field">
+                        <div class="ui input focus">
+                          <input type="text" name="lunchMeat" placeholder="荤菜数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="lunchVegetable" placeholder="素菜数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="lunchMixed" placeholder="半荤半素数量" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 晚餐 -->
+                  <div class="column center aligned">
+                    <div class="ui form">
+                      <h4 class="ui dividing header">晚餐</h4>
+                      <div class="field">
+                        <div class="ui input focus">
+                          <input type="text" name="dinnerMeat" placeholder="荤菜数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="dinnerVegetable" placeholder="素菜数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="dinnerMixed" placeholder="半荤半素数量" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                <button class="btn btn-primary" type="submit">确认</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -144,6 +284,8 @@
           console.log(time);
           $("#addDate").val(date);
           $("#addTime").val(time);
+          $("#url").val([[${url}]])
+
         }
       </script>
       <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
@@ -164,7 +306,7 @@
                 <option value="2">午餐</option>
                 <option value="3">晚餐</option>
               </select><br/>
-              <input type="text" class="form-control" id="url" name="url" value="index" hidden>
+              <input type="text" class="form-control" id="url" name="url" value="" hidden>
               <select class="form-control" id="addDishId" name="addDishId">
                 <option th:each="dish:${dishes}" th:value="${dish.getId()}">[[${dish.getName()}]]</option>
               </select>
@@ -177,7 +319,7 @@
         </div>
       </div>
 
-      <!-- addDish JavaScript -->
+      <!-- changeDish JavaScript -->
       <script th:inline="javascript">
         function changeSend(date, time, dishId){
           console.log(date);
@@ -187,6 +329,8 @@
           $("#changeTime").val(time);
           $("#changeDishId").val(dishId);
           $("#oldDishId").val(dishId);
+          $("#url2").val([[${url}]])
+          console.log([[${url}]])
         }
       </script>
       <div class="modal fade" id="changeModal" tabindex="-1" role="dialog"
@@ -208,7 +352,7 @@
                 <option value="3">晚餐</option>
               </select><br/>
               <input type="text" class="form-control" id="oldDishId" name="oldDishId" hidden>
-              <input type="text" class="form-control" id="url" name="url" value="index" hidden>
+              <input type="text" class="form-control" id="url2" name="url" value="" hidden>
               <select class="form-control" id="changeDishId" name="changeDishId">
                 <option th:each="dish:${dishes}" th:value="${dish.getId()}">[[${dish.getName()}]]</option>
               </select>
@@ -221,9 +365,28 @@
         </div>
       </div>
 
-      <div th:if="${breakfast.isEmpty() and lunch.isEmpty() and dinner.isEmpty()}">
-        <h2>今天不吃饭了？？</h2>
+      <div th:if="${!breakfast.isEmpty() or !lunch.isEmpty() or !dinner.isEmpty()}">
+        <h4><br/>总览</h4>
+        <table class="ui small table">
+          <thead>
+          <tr>
+            <th th:each="NAME:${dishName}">[[${NAME}]]</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>[[${#numbers.formatDecimal(recipe.pork,1,'COMMA',2,'POINT')}]]</td>
+            <td>[[${#numbers.formatDecimal(recipe.beef,1,'COMMA',2,'POINT')}]]</td>
+            <td>[[${#numbers.formatDecimal(recipe.mutton,1,'COMMA',2,'POINT')}]]</td>
+            <td>[[${#numbers.formatDecimal(recipe.chicken,1,'COMMA',2,'POINT')}]]</td>
+            <td>[[${#numbers.formatDecimal(recipe.duck,1,'COMMA',2,'POINT')}]]</td>
+            <td>[[${#numbers.formatDecimal(recipe.others,1,'COMMA',2,'POINT')}]]</td>
+          </tr>
+          </tbody>
+        </table>
       </div>
+
+
 
 
 

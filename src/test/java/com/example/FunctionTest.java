@@ -186,6 +186,29 @@ public class FunctionTest {
 
   }
 
+  @Test
+  void testRandom() {
+    List<Dish> dishVegetable = dishService.selectByCategory(Dish.VEGETABLE);
+    List<Dish> dishMeat = dishService.selectByCategory(Dish.MEAT);
+    List<Dish> dishMixed = dishService.selectByCategory(Dish.MIXED);
 
+    int vegetablesLength = 2+3+3;
+    if (vegetablesLength > dishVegetable.size()) {
+      System.out.println("菜品不够 必须会重复 重新选择周期");
+    }
+    List<Integer> vegetables = new ArrayList(vegetablesLength);
+    Random r = new Random(1);
+    while (vegetables.size() < vegetablesLength) {
+      int rand = r.nextInt(dishVegetable.size());
+      if (vegetables.contains(rand)) {
+        System.out.println("出现重复");
+        continue;
+      }
+      vegetables.add(rand);
+    }
+
+    vegetables.sort((x,y) -> Integer.compare(x, y));
+    System.out.println(vegetables);
+  }
 
 }

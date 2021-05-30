@@ -4,8 +4,11 @@ spring:
     password: 123456
     url: jdbc:sqlite:dish.db
     driver-class-name: org.sqlite.JDBC
+  thymeleaf:
+    cache: false
 # 整合mybatis
 mybatis:
   type-aliases-package: com.example.pojo
   mapper-locations:
     - classpath:mybatis/mapper/*.xml
+

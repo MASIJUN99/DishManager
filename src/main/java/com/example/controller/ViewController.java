@@ -33,6 +33,7 @@ public class ViewController {
   public String toIndex(Model model) {
 
     Date date = new Date(System.currentTimeMillis());
+//    Date date = myStringToDateConverter.convert("2021-5-28");
     String dateStr = myDateToStringConverter.convert(date);
     model.addAttribute("date", dateStr);  // 把时间放进去
 
@@ -60,15 +61,26 @@ public class ViewController {
     dishesDinner.sort((x, y) -> Integer.compare(x.getCategory(), y.getCategory()));
 
     // 放到请求体
+    String url = "index";  // 保存跳转页面
 
-
+    model.addAttribute("url", url);
     model.addAttribute("breakfast", dishesBreakfast);
     model.addAttribute("lunch", dishesLunch);
     model.addAttribute("dinner", dishesDinner);
     model.addAttribute("dishes", dishService.selectAll());
 
-    return "index";
+    return url;
   }
+
+  @RequestMapping("/week")
+  public String toWeek(Model model) {
+    Date date = new Date();
+    String dateStr = myDateToStringConverter.convert(date);
+    model.addAttribute("date", dateStr);
+    return "week";
+  }
+
+
 
 
 

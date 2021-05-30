@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<div th:insert="~{commons/commons::head}"></div>
+
+<body class="app">
+<div th:insert="~{commons/commons::navBar(active='week')}"></div>
+
+<div class="app-wrapper">
+
+  <div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+
+
+      <h1 class="app-page-title">查看日历</h1>
+      <!-- 这里放内容！ -->
+      <script th:inline="javascript">
+        var Cal = function(divId) {
+
+          //Store div id
+          this.divId = divId;
+
+          // Days of week, starting on Sunday
+          this.DaysOfWeek = [
+            '周日',
+            '周一',
+            '周二',
+            '周三',
+            '周四',
+            '周五',
+            '周六'
+          ];
+
+          // Months, stating on January
+          this.Months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+
+          // Set the current month, year
+          var d = new Date();
+
+          this.currMonth = d.getMonth();
+          this.currYear = d.getFullYear();
+          this.currDay = d.getDate();
+
+        };
+
+        // Goes to next month
+        Cal.prototype.nextMonth = function() {
+          if (this.currMonth == 11) {
+            this.currMonth = 0;
+            this.currYear = this.currYear + 1;
+          } else {
+            this.currMonth = this.currMonth + 1;
+          }
+          this.showcurr(new Date().getMonth() - this.currMonth);
+        };
+
+        // Goes to previous month
+        Cal.prototype.previousMonth = function() {
+          if (this.currMonth == 0) {
+            this.currMonth = 11;
+            this.currYear = this.currYear - 1;
+          } else {
+            this.currMonth = this.currMonth - 1;
+          }
+          this.showcurr(new Date().getMonth() - this.currMonth);
+        };
+
+        // Show current month
+        Cal.prototype.showcurr = function(page) {
+          this.showMonth(this.currYear, this.currMonth, page);
+        };
+
+        // Show month (year, month)
+        Cal.prototype.showMonth = function(y, m, page) {
+          var d = new Date()
+              // First day of the week in the selected month
+              ,
+              firstDayOfMonth = new Date(y, m, 1).getDay()
+              // Last day of the selected month
+              ,
+              lastDateOfMonth = new Date(y, m + 1, 0).getDate()
+              // Last day of the previous month
+              ,
+              lastDayOfLastMonth = m == 0 ? new Date(y - 1, 11, 0).getDate() : new Date(y, m, 0).getDate();
+
+
+          var html = '<table>';
+
+          // Write selected month and year
+          html += '<thead><tr>';
+          html += '<td colspan="7">' + this.Months[m] + ' ' + y + '</td>';
+          html += '</tr></thead>';
+
+
+          // Write the header of the days of the week
+          html += '<tr class="days">';
+          for (var i = 0; i < this.DaysOfWeek.length; i++) {
+            html += '<td>' + this.DaysOfWeek[i]+ '</td>';
+          }
+          html += '</tr>';
+
+          // Write the days
+          var i = 1;
+          do {
+
+            var dow = new Date(y, m, i).getDay();
+
+            // Write the current day in the loop
+            var chk = new Date();
+            var chkY = chk.getFullYear();
+            var chkM = chk.getMonth();
+
+            console.log(this.currMonth)
+            var month = chkM - page + 1;
+            var date;
+
+
+            // If Sunday, start new row
+            if (dow == 0) {
+              html += '<tr>';
+            }
+                // If not Sunday but first day of the month
+            // it will write the last days from the previous month
+            else if (i == 1) {
+              html += '<tr>';
+              var k = lastDayOfLastMonth - firstDayOfMonth + 1;
+
+              for (var j = 0; j < firstDayOfMonth; j++) {
+                var temp;
+                if (month - 1 < 10) {
+                  temp = '0' + (month-1);
+                } else {
+                  temp = month-1;
+                }
+                date = chkY + '-' + temp + '-' + k;
+                html += '<td class="not-current"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + k + '</a></td>';
+                k++;
+              }
+            }
+
+
+            if (chkY == this.currYear && chkM == this.currMonth && i == this.currDay) {
+              if (month < 10) {
+                temp = '0' + month;
+              } else {
+                temp = month;
+              }
+              date = chkY + '-' + temp + '-' + i;
+              html += '<td class="today"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + i + '</a></td>';
+            } else {
+              if (month < 10) {
+                temp = '0' + month;
+              } else {
+                temp = month;
+              }
+              date = chkY + '-' + temp + '-' + i;
+              html += '<td class="normal"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + i + '</a></td>';
+            }
+            // If Saturday, closes the row
+            if (dow == 6) {
+              html += '</tr>';
+            }
+                // If not Saturday, but last day of the selected month
+            // it will write the next few days from the next month
+            else if (i == lastDateOfMonth) {
+              var k = 1;
+              for (dow; dow < 6; dow++) {
+                if (month + 1 < 10) {
+                  temp = '0' + (month+1);
+                } else {
+                  temp = month+1;
+                }
+                date = chkY + '-' + temp + '-' + k;
+                html += '<td class="not-current"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + k + '</a></td>';
+                k++;
+              }
+            }
+
+            i++;
+          } while (i <= lastDateOfMonth);
+
+          // Closes table
+          html += '</table>';
+
+          // Write HTML to the div
+          document.getElementById(this.divId).innerHTML = html;
+        };
+
+        // On Load of the window
+        window.onload = function() {
+
+          // Start calendar
+          var c = new Cal("divCal");
+          c.showcurr(0);
+
+          // Bind next and previous button clicks
+          getId('btnNext').onclick = function() {
+            c.nextMonth();
+          };
+          getId('btnPrev').onclick = function() {
+            c.previousMonth();
+          };
+        }
+
+        // Get element by id
+        function getId(id) {
+          return document.getElementById(id);
+        }
+      </script>
+
+      <link rel='stylesheet prefetch' th:href="@{/css/font-awesome.css}">
+      <div class="calendar-wrapper">
+        <button id="btnPrev" type="button">Prev</button>
+        <button id="btnNext" type="button">Next</button>
+        <div id="divCal"></div>
+      </div>
+
+
+
+
+    </div><!--//container-fluid-->
+  </div><!--//app-content-->
+
+  <footer class="app-footer">
+    <div class="container text-center py-3">
+      <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+      <small class="copyright">Designed with <i class="fas fa-heart" style="color: #fb866a;"></i> by
+        <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a>
+        for developers</small>
+
+    </div>
+  </footer><!--//app-footer-->
+
+</div><!--//app-wrapper-->
+
+
+<!-- Javascript -->
+<script th:src="@{plugins/popper.min.js}"></script>
+<script th:src="@{plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+<!-- Charts JS -->
+<script th:src="@{plugins/chart.js/chart.min.js}"></script>
+<script th:src="@{js/index-charts.js}"></script>
+
+<!-- Page Specific JS -->
+<script th:src="@{js/app.js}"></script>
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Core plugin JavaScript-->
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+<!-- Page level custom scripts -->
+<script th:src="@{/js/demo/chart-area-demo.js}"></script>
+<script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+
+<!-- jQuery -->
+<script th:src="@{/js/jquery-3.6.0.js}"></script>
+
+<div th:insert="commons/commons::foot"></div>
+
+</body>
+</html> 
+
