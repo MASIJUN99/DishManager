@@ -18,7 +18,7 @@ public class DailyNumService {
   public DailyNum selectByDate(String date) {
     DailyNum dailyNum = dailyNumMapper.selectByDate(date);
     if (dailyNum == null) {
-      dailyNum = new DailyNum(date, 0);
+      dailyNum = new DailyNum(date, 1);
       dailyNumMapper.insert(dailyNum);
     }
     return dailyNum;

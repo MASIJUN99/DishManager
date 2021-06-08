@@ -12,11 +12,12 @@ public class Dish {
   static public Integer VEGETABLE = 0;
   static public Integer MEAT = 1;
   static public Integer MIXED = 2;
+  static public Integer SOUP = 3;
 
 
   private Integer id;
   private String name;
-  private Integer category;  // 0素 1荤 2半
+  private Integer category;  // 0素 1荤 2半 3汤
   private Integer recipe;
 
   public Dish(String name, Integer category) {

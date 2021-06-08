@@ -54,8 +54,8 @@ public class FunctionTest {
       Integer recipeId = recipeService.getNewId();
       Dish dish = new Dish(name, category, recipeId);
       dishService.insert(dish);
-      Recipe recipe = new Recipe(pork, beef, mutton, chicken, duck, others);
-      recipeService.insert(recipe);
+      // Recipe recipe = new Recipe(pork, beef, mutton, chicken, duck, others);
+      // recipeService.insert(recipe);
     }
   }
 

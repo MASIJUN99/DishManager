@@ -11,4 +11,3 @@ mybatis:
   type-aliases-package: com.example.pojo
   mapper-locations:
     - classpath:mybatis/mapper/*.xml
-

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface DishMapper {
 
   List<Dish> selectAll();
+  List<String> selectAllDishName();
   Dish selectByName(String name);
   Dish selectById(int id);
   List<Dish> selectByCategory(int category);

@@ -116,6 +116,9 @@
                       <div class="row ui input focus">
                         <input type="text" name="breakfastMixed" placeholder="半荤半素数量" required>
                       </div>
+                      <div class="ui input focus">
+                        <input type="text" name="breakfastSoup" placeholder="汤类数量" required>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -132,6 +135,9 @@
                       </div>
                       <div class="ui input focus">
                         <input type="text" name="lunchMixed" placeholder="半荤半素数量" required>
+                      </div>
+                      <div class="ui input focus">
+                        <input type="text" name="lunchSoup" placeholder="汤类数量" required>
                       </div>
                     </div>
                   </div>
@@ -150,6 +156,9 @@
                       <div class="ui input focus">
                         <input type="text" name="dinnerMixed" placeholder="半荤半素数量" required>
                       </div>
+                      <div class="ui input focus">
+                        <input type="text" name="dinnerSoup" placeholder="汤类数量" required>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -164,6 +173,13 @@
       </div>
 
 
+
+      <h4><br/>总览</h4>
+      <div class="ui grid">
+        <div class="two wide column" th:each="index:${indexList}" th:if="${recipeList[index] != 0}">
+          <div class="header" >[[${recipeNameList[index]}]]</div>[[${#numbers.formatDecimal(recipeList[index],1,'COMMA',2,'POINT')}]]
+        </div>
+      </div>
 
 
 

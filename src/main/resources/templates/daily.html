@@ -54,7 +54,7 @@
                 <a th:if="${dish.getCategory()==0}">素菜</a>
                 <a th:if="${dish.getCategory()==1}">荤菜</a>
                 <a th:if="${dish.getCategory()==2}">半荤半素</a>
-                <a th:if="${dish.getCategory()==3}">其他</a>
+                <a th:if="${dish.getCategory()==3}">汤类</a>
               </div>
               <div class="description">
                 no desc
@@ -99,7 +99,7 @@
                 <a th:if="${dish.getCategory()==0}">素菜</a>
                 <a th:if="${dish.getCategory()==1}">荤菜</a>
                 <a th:if="${dish.getCategory()==2}">半荤半素</a>
-                <a th:if="${dish.getCategory()==3}">其他</a>
+                <a th:if="${dish.getCategory()==3}">汤类</a>
               </div>
               <div class="description">
                 no desc
@@ -144,7 +144,7 @@
                 <a th:if="${dish.getCategory()==0}">素菜</a>
                 <a th:if="${dish.getCategory()==1}">荤菜</a>
                 <a th:if="${dish.getCategory()==2}">半荤半素</a>
-                <a th:if="${dish.getCategory()==3}">其他</a>
+                <a th:if="${dish.getCategory()==3}">汤类</a>
               </div>
               <div class="description">
                 no desc
@@ -235,6 +235,9 @@
                         <div class="ui input focus">
                           <input type="text" name="breakfastMixed" placeholder="半荤半素数量" required>
                         </div>
+                        <div class="ui input focus">
+                          <input type="text" name="breakfastSoup" placeholder="汤类数量" required>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -252,6 +255,9 @@
                         <div class="ui input focus">
                           <input type="text" name="lunchMixed" placeholder="半荤半素数量" required>
                         </div>
+                        <div class="ui input focus">
+                          <input type="text" name="lunchSoup" placeholder="汤类数量" required>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -268,6 +274,9 @@
                         </div>
                         <div class="ui input focus">
                           <input type="text" name="dinnerMixed" placeholder="半荤半素数量" required>
+                        </div>
+                        <div class="ui input focus">
+                          <input type="text" name="dinnerSoup" placeholder="汤类数量" required>
                         </div>
                       </div>
                     </div>
@@ -371,25 +380,14 @@
         </div>
       </div>
 
+
       <div th:if="${!breakfast.isEmpty() or !lunch.isEmpty() or !dinner.isEmpty()}">
         <h4><br/>总览</h4>
-        <table class="ui small table">
-          <thead>
-          <tr>
-            <th th:each="NAME:${dishName}">[[${NAME}]]</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>[[${#numbers.formatDecimal(recipe.pork,1,'COMMA',2,'POINT')}]]</td>
-            <td>[[${#numbers.formatDecimal(recipe.beef,1,'COMMA',2,'POINT')}]]</td>
-            <td>[[${#numbers.formatDecimal(recipe.mutton,1,'COMMA',2,'POINT')}]]</td>
-            <td>[[${#numbers.formatDecimal(recipe.chicken,1,'COMMA',2,'POINT')}]]</td>
-            <td>[[${#numbers.formatDecimal(recipe.duck,1,'COMMA',2,'POINT')}]]</td>
-            <td>[[${#numbers.formatDecimal(recipe.others,1,'COMMA',2,'POINT')}]]</td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="ui grid">
+          <div class="two wide column" th:each="index:${indexList}" th:if="${recipeList[index] != 0}">
+              <div class="header" >[[${recipeNameList[index]}]]</div>[[${#numbers.formatDecimal(recipeList[index],1,'COMMA',2,'POINT')}]]
+          </div>
+        </div>
       </div>
 
 

@@ -63,8 +63,8 @@ class DishManageApplicationTests {
         Integer recipeId = recipeService.getNewId();
         Dish dish = new Dish(name, category, recipeId);
         dishService.insert(dish);
-        Recipe recipe = new Recipe(pork, beef, mutton, chicken, duck, others);
-        recipeService.insert(recipe);
+        //Recipe recipe = new Recipe(pork, beef, mutton, chicken, duck, others);
+        //recipeService.insert(recipe);
       }
 
     }
@@ -83,8 +83,8 @@ class DishManageApplicationTests {
 
   @Test
   void insertRecipeTest() {
-    Recipe recipe = new Recipe(90, 1.0, 1.0, 1.0, 5.0, 2.0,0.0);
-    recipeService.insert(recipe);
+    //Recipe recipe = new Recipe(90, 1.0, 1.0, 1.0, 5.0, 2.0,0.0);
+    //recipeService.insert(recipe);
   }
 
   @Test

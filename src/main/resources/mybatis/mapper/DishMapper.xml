@@ -7,6 +7,10 @@
   <select id="selectAll" resultType="Dish">
     SELECT * FROM dishes;
   </select>
+  
+  <select id="selectAllDishName" resultType="String">
+    SELECT name FROM dishes;
+  </select>
 
   <select id="selectByName" resultType="Dish">
     SELECT * FROM dishes WHERE name=#{name};

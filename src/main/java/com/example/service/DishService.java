@@ -19,6 +19,10 @@ public class DishService {
     return dishMapper.selectAll();
   }
 
+  public List<String> selectAllDishName() {
+    return dishMapper.selectAllDishName();
+  }
+
   public Dish selectById(int id) {
     return dishMapper.selectById(id);
   }
