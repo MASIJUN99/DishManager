@@ -1,16 +1,23 @@
 package com.example;
 
+import com.example.pojo.Daily;
+import com.example.service.DailyService;
 import com.example.utils.MyDateToStringConverter;
+import com.example.utils.MyDateUtils;
 import com.example.utils.MyStringToDateConverter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class WeekTest {
+
+  @Autowired
+  DailyService dailyService;
 
   MyDateToStringConverter myDateToStringConverter = new MyDateToStringConverter();
   MyStringToDateConverter myStringToDateConverter = new MyStringToDateConverter();
@@ -63,6 +70,38 @@ public class WeekTest {
     String convert = myDateToStringConverter.convert(time);
     System.out.println(convert);
 
+  }
+
+  @Test
+  void testBefore() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    Calendar stop = Calendar.getInstance();
+    stop.setTime(myStringToDateConverter.convert("2021-6-4"));
+    while (cal.before(stop)) {
+      System.out.println(myDateToStringConverter.convert(cal.getTime()));
+      cal.add(Calendar.DATE,1);
+    }
+    System.out.println(cal.before(stop));
+  }
+
+  @Test
+  void testNearlyDish() {
+    List<Daily> dailies = dailyService.selectByDate("2021-05-28");
+    System.out.println(dailies);
+//    MyDateUtils myDateUtils = new MyDateUtils();
+//    myDateUtils.getNearlyDish(3, "2021-5-31");
+  }
+
+  @Test
+  void testInteger() {
+    Integer integer = 1;
+    Integer integer1 = 1;
+    System.out.println(integer.equals(integer1));
+
+    Integer integer2 = 200;
+    Integer integer3 = 200;
+    System.out.println(integer3.equals(integer2));
   }
 
 }

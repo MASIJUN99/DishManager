@@ -38,6 +38,10 @@ public class DailyService {
     return dailyMapper.selectByDate(convert);
   }
 
+  public List<Daily> selectByDate(String date) {
+    return dailyMapper.selectByDate(date);
+  }
+
   public List<Daily> selectByTime(Integer time) {
     return dailyMapper.selectByTime(time);
   }
@@ -97,7 +101,9 @@ public class DailyService {
     return dailyMapper.deleteById(id);
   }
 
-
+  public int deleteByDate(String date) {
+    return dailyMapper.deleteByDate(date);
+  }
 
 
 

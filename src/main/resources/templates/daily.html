@@ -20,19 +20,24 @@
         <div class="four wide column ">
             <h1 class="app-page-title">[[${date}]]菜谱</h1>
         </div>
-        <div class="three wide column">
+        <div class="two wide column">
           <a th:href="@{'/queryDate?dateStr='+${next}}">下一天</a>
           <i class="angle right large icon"></i>
         </div>
-        <div class="two wide column">
+        <div class="five wide column">
           <form class="ui action input" th:action="@{/changePeopleNum}" method="post">
               <input type="text" name="num" id="num" placeholder="人数..." th:value="${num}">
               <input type="text" name="date" id="date" th:value="${date}" hidden>
               <button  class="ui button">更改人数</button>
           </form>
         </div>
-
-
+        <div class="two wide column">
+          <form th:action="@{/deleteAll}" method="post">
+            <input type="text" name="dateDel" id="dateDel" th:value="${date}" hidden>
+            <input type="text" name="urlDel" id="urlDel" th:value="${url}" hidden>
+            <button class="ui secondary button">清空当日</button>
+          </form>
+        </div>
       </div>
 
       <!-- 这里放内容！ -->

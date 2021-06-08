@@ -23,75 +23,97 @@
         <div class="three wide column">
           <button class="ui positive button" type="submit">确认</button>
         </div>
+        <div class="three wide column">
+        </div>
+        <div class="three wide column">
+          <a class="text-danger">需要随机生成？</a>
+          <a href="#" class="circular ui icon button" data-toggle="modal" data-target="#randomDish" th:onclick="randomDish()">
+            <i class="icon plus"></i>
+          </a>
+        </div>
       </form>
 
-      <!-- 这里罗列所有天数内容 -->
+      <!-- 这里罗列所有天数内容 这里用到了三重循环 作为codebase -->
 
-      <div class="ui card">
-        <div class="content">
-          <div class="right floated meta">14h</div><img class="ui avatar image" src="/images/avatar/large/elliot.jpg"> Elliot </div>
-        <div class="image">
-          <img>
-        </div>
-        <div class="content">
-    <span class="right floated">
-      <i class="heart outline like icon"></i>
-      17 likes
-    </span>
-          <i class="comment icon"></i>
-          3 comments
-        </div>
-        <div class="extra content">
-          <div class="ui large transparent left icon input">
-            <i class="heart outline icon"></i>
-            <input type="text" placeholder="Add Comment...">
+      <div class="ui grid">
+        <div class="four wide column" th:each="map:${maps}">
+          <div class="ui card">
+            <div class="content">
+              <div class="header center aligned">
+                [[${map.getKey()}]]
+              </div>
+            </div>
+            <div class="content" th:each="daily:${map.getValue()}">
+              <h4 class="ui sub header">
+                <!-- TODO: -->
+                <i th:if="${daily.getKey==1}" th:text="早餐"></i>
+                <i th:if="${daily.getKey==2}" th:text="午餐"></i>
+                <i th:if="${daily.getKey==3}" th:text="晚餐"></i>
+              </h4>
+              <div class="ui small feed">
+                <div class="event">
+                  <div class="content">
+                    <div class="summary">
+                      <div class="ui grid">
+                        <div th:if="${daily.getValue().isEmpty()}" class="five wide column text-danger">无</div>
+                        <div th:each="dish:${daily.getValue()}" class="five wide column">[[${dish.name}]]</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <i>需要随机生成？</i>
-      <a href="#" class="circular massive ui icon button" data-toggle="modal" data-target="#randomDish" th:onclick="randomSend()">
-        <i  class="icon plus"></i>
-      </a>
-
       <!-- changeDish JavaScript -->
       <script th:inline="javascript">
-        function randomSend(){
+        function randomDish(){
           var dateStart = $("#dateStart").val();
           var dateEnd = $("#dateEnd").val();
-          console.log(dateStart);
-          console.log(dateEnd);
-
+          $("#start").val(dateStart);
+          $("#end").val(dateEnd);
         }
       </script>
       <div class="modal fade" id="randomDish" tabindex="-1" role="dialog"
            aria-labelledby="exampleModalLabel"
            aria-hidden="true">
         <div class="modal-dialog" role="document">
-<!--          TODO: change href-->
-          <form th:action="@{/randomDailyDishes}" class="modal-content">
+          <form th:action="@{/randomBetweenTwoDates}" class="modal-content">
             <div class="modal-header" >
-              <h5 class="modal-title" id="randomModalLabel">添加</h5>
+              <h5 class="modal-title" id="randomModalLabel">随机生成</h5>
               <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
             </div>
             <div class="modal-body form-label">
-              <input type="date" class="form-control" id="randomDate" name="dateStr" value=""><br/>
-              <input type="text" class="form-control" id="url3" name="url" value="" hidden>
+              <div class="ui two column centered grid">
+                <div class="column">
+                  <input type="date" class="form-control" id="start" name="start" value="">
+                </div>
+                <div class="column">
+                  <input type="date" class="form-control" id="end" name="end" value="">
+                </div>
+                <div class="column">
+                  循环周期
+                  <input type="text" class="form-control" id="cycle" name="cycle" value="3" placeholder="循环周期..">
+                </div>
+              </div>
               <div class="ui equal width grid container">
                 <!-- 早餐 -->
                 <div class="column center aligned">
                   <div class="ui form">
                     <h4 class="ui dividing header">早餐</h4>
                     <div class="field">
-                      <div class="ui input focus">
+
+                      <div class="row ui input focus">
                         <input type="text" name="breakfastVegetable" placeholder="素菜数量" required>
                       </div>
-                      <div class="ui input focus">
+                      <div class="row ui input focus">
                         <input type="text" name="breakfastMeat" placeholder="荤菜数量" required>
                       </div>
-                      <div class="ui input focus">
+                      <div class="row ui input focus">
                         <input type="text" name="breakfastMixed" placeholder="半荤半素数量" required>
                       </div>
                     </div>
@@ -103,10 +125,10 @@
                     <h4 class="ui dividing header">午餐</h4>
                     <div class="field">
                       <div class="ui input focus">
-                        <input type="text" name="lunchMeat" placeholder="荤菜数量" required>
+                        <input type="text" name="lunchVegetable" placeholder="素菜数量" required>
                       </div>
                       <div class="ui input focus">
-                        <input type="text" name="lunchVegetable" placeholder="素菜数量" required>
+                        <input type="text" name="lunchMeat" placeholder="荤菜数量" required>
                       </div>
                       <div class="ui input focus">
                         <input type="text" name="lunchMixed" placeholder="半荤半素数量" required>
@@ -120,10 +142,10 @@
                     <h4 class="ui dividing header">晚餐</h4>
                     <div class="field">
                       <div class="ui input focus">
-                        <input type="text" name="dinnerMeat" placeholder="荤菜数量" required>
+                        <input type="text" name="dinnerVegetable" placeholder="素菜数量" required>
                       </div>
                       <div class="ui input focus">
-                        <input type="text" name="dinnerVegetable" placeholder="素菜数量" required>
+                        <input type="text" name="dinnerMeat" placeholder="荤菜数量" required>
                       </div>
                       <div class="ui input focus">
                         <input type="text" name="dinnerMixed" placeholder="半荤半素数量" required>

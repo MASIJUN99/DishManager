@@ -85,7 +85,9 @@ public class ViewController {
     Date date = new Date();
     String dateStr = myDateToStringConverter.convert(date);
     model.addAttribute("date", dateStr);
+//    return "redirect:/queryBetweenTwoDates?dateStart=" + dateStr + "&dateEnd=" + dateStr;
     return "date";
+
   }
 
 

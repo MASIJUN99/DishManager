@@ -176,7 +176,6 @@ public class FunctionTest {
       Date date = startCal.getTime();
       String dateStr = myDateToStringConverter.convert(date);
 
-      // TODO: 这里调用生成菜谱的那个玩意
 
       System.out.println(dateStr);
       startCal.add(Calendar.DATE, 1);
@@ -209,6 +208,19 @@ public class FunctionTest {
 
     vegetables.sort((x,y) -> Integer.compare(x, y));
     System.out.println(vegetables);
+  }
+
+
+
+  @Test
+  void testRandom2() {
+    Random random = new Random(2);
+    int i = random.nextInt();
+    System.out.println(i);
+    Random random1 = new Random(2);
+    int ii = random1.nextInt();
+    System.out.println(ii);
+
   }
 
 }

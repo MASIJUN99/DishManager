@@ -43,7 +43,7 @@ class DishManageApplicationTests {
   void testDish() {
     // 模拟输入
     Random rand = new Random();
-    int N = 100;
+    int N = 200;
     for (int i = 0; i < N; i++) {
 
       String name = "菜品" + i;

@@ -131,6 +131,9 @@
                 } else {
                   temp = month-1;
                 }
+                if (k < 10) {
+                  k = '0' + k;
+                }
                 date = chkY + '-' + temp + '-' + k;
                 html += '<td class="not-current"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + k + '</a></td>';
                 k++;
@@ -144,6 +147,9 @@
               } else {
                 temp = month;
               }
+              if (i < 10) {
+                i = '0' + i;
+              }
               date = chkY + '-' + temp + '-' + i;
               html += '<td class="today"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + i + '</a></td>';
             } else {
@@ -151,6 +157,9 @@
                 temp = '0' + month;
               } else {
                 temp = month;
+              }
+              if (i < 10) {
+                i = '0' + i;
               }
               date = chkY + '-' + temp + '-' + i;
               html += '<td class="normal"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + i + '</a></td>';
@@ -168,6 +177,9 @@
                   temp = '0' + (month+1);
                 } else {
                   temp = month+1;
+                }
+                if (k < 10) {
+                  k = '0' + k;
                 }
                 date = chkY + '-' + temp + '-' + k;
                 html += '<td class="not-current"><a style="color: inherit" href="/queryDate?dateStr=' + date + '">' + k + '</a></td>';
@@ -252,7 +264,7 @@
 <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
 
 <!-- Custom scripts for all pages-->
-<script th:src="@{/js/sb-admin-2.min.js}"></script>
+<script th:src="@{/js/sb-admin-2.js}"></script>
 
 <!-- Page level plugins -->
 <script th:src="@{/vendor/chart.js/Chart.min.js}"></script>

@@ -1,11 +1,19 @@
 package com.example.utils;
 
+import com.example.pojo.Daily;
+import com.example.service.DailyService;
+import com.example.service.DishService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MyDateUtils {
+
+
+  @Autowired
+  DailyService dailyService;
 
   MyStringToDateConverter myStringToDateConverter = new MyStringToDateConverter();
   MyDateToStringConverter myDateToStringConverter = new MyDateToStringConverter();
@@ -94,5 +102,52 @@ public class MyDateUtils {
     }
     return dateList;
   }
+
+  public List<Integer> getNearlyDish(int cycle, String date) {
+    return getNearlyDish(cycle, myStringToDateConverter.convert(date));
+  }
+
+  public List<Integer> getNearlyDish(int cycle, Date date) {
+    List<Integer> allDishes = new ArrayList<>();
+
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+
+    cal.add(Calendar.DATE, -cycle);
+    List<Date> dateList = new ArrayList<>();
+    for (int i = 0; i < cycle * 2; i++) {
+      Date time = cal.getTime();
+      List<Daily> dailies = dailyService.selectByDate(time);
+      for (Daily daily : dailies) {
+        allDishes.add(daily.getDish());
+      }
+      cal.add(Calendar.DATE, 1);
+    }
+
+
+
+    System.out.println(allDishes);
+    return allDishes;
+  }
+
+  public List<Date> getDateBetween(Date dateStart, Date dateEnd) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(dateStart);
+    Calendar stop = Calendar.getInstance();
+    stop.setTime(dateEnd);
+    stop.add(Calendar.DATE, 1);
+
+    List<Date> dateList = new ArrayList<>();
+    while (cal.before(stop)) {
+      dateList.add(cal.getTime());
+      cal.add(Calendar.DATE, 1);
+    }
+    return dateList;
+  }
+
+  public List<Date> getDateBetween(String dateStart, String dateEnd) {
+    return getDateBetween(myStringToDateConverter.convert(dateStart), myStringToDateConverter.convert(dateEnd));
+  }
+
 
 }

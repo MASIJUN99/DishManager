@@ -14,8 +14,14 @@ import com.example.utils.MyStringToDateConverter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
+import javax.xml.bind.SchemaOutputResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -161,8 +167,15 @@ public class DailyController {
 
 
     String url = "queryDate?dateStr=" + date;
-    System.out.println(url);
     return "redirect:/" + url;
+  }
+
+  @RequestMapping("/deleteAll")
+  public String deleteAll(String dateDel, String urlDel) {
+    System.out.println(dateDel);
+    System.out.println(urlDel);
+    dailyService.deleteByDate(dateDel);
+    return "redirect:/" + urlDel;
   }
 
   @RequestMapping("/randomDailyDishes")
@@ -281,65 +294,198 @@ public class DailyController {
     Date start = myStringToDateConverter.convert(dateStart);
     Date end = myStringToDateConverter.convert(dateEnd);
     Calendar cal = Calendar.getInstance();
+    Calendar stop = Calendar.getInstance();
     cal.setTime(start);
+    stop.setTime(end);
+    stop.add(Calendar.DATE, 1);
 
-    List<List<Dish>> allBreakfast = new ArrayList<>();
-    List<List<Dish>> allLunch = new ArrayList<>();
-    List<List<Dish>> allDinner = new ArrayList<>();
-    List<String> dateList = new ArrayList<>();
-    while (cal.after(end)) {
+    Map<String, Map<Integer, List<Dish>>> map = new TreeMap<>();
+    while (cal.before(stop)) {
       Date date = cal.getTime();
-      dateList.add(myDateToStringConverter.convert(date));
+      String dateStr = myDateToStringConverter.convert(date);
+
+      Map<Integer, List<Dish>> mapOfDay = new HashMap<>();
       // 获取date日期早餐列表
       List<Daily> dailyBreakfast = dailyService.selectByDateAndTime(date, Daily.BREAKFAST);
       List<Dish> breakfast = new ArrayList<>();
       for (Daily daily : dailyBreakfast) {
         breakfast.add(dishService.selectById(daily.getDish()));
       }
-      allBreakfast.add(breakfast);
+      mapOfDay.put(Daily.BREAKFAST, breakfast);
+
       // 获取date日期午餐列表
       List<Daily> dailyLunch = dailyService.selectByDateAndTime(date, Daily.LUNCH);
       List<Dish> lunch = new ArrayList<>();
       for (Daily daily : dailyLunch) {
         lunch.add(dishService.selectById(daily.getDish()));
       }
-      allLunch.add(lunch);
+      mapOfDay.put(Daily.LUNCH, lunch);
       // 获取date日期晚餐列表
       List<Daily> dailyDinner = dailyService.selectByDateAndTime(date, Daily.DINNER);
       List<Dish> dinner = new ArrayList<>();
       for (Daily daily : dailyDinner) {
         dinner.add(dishService.selectById(daily.getDish()));
       }
-      allDinner.add(dinner);
+      mapOfDay.put(Daily.DINNER, dinner);
       cal.add(Calendar.DATE, 1);
+      map.put(dateStr, mapOfDay);
     }
-    model.addAttribute("breakfast", allBreakfast);
-    model.addAttribute("lunch", allLunch);
-    model.addAttribute("dinner", allDinner);
-    model.addAttribute("dateList", dateList);
-    model.addAttribute("date", new Date());
+
+    System.out.println(map);
+    model.addAttribute("maps", map);
+    model.addAttribute("date", myDateToStringConverter.convert(new Date()));
     model.addAttribute("dateStart", dateStart);
     model.addAttribute("dateEnd", dateEnd);
-
     return "date";
   }
 
-  /*
-  TODO: 添加一下日期范围内的增加菜谱
-   其实我有个想法，我在把每天的单一分类全加起来生成一个足够长的array，这个array要保证是唯一元素的，再每天分配，
-   在分配前要打乱顺序！
-   */
   @RequestMapping("/randomBetweenTwoDates")
-  public String randomBetweenTwoDates(String dateStart, String dateEnd, int cycle,
+  public String randomBetweenTwoDates(String start, String end, int cycle,
       int breakfastMeat, int breakfastVegetable, int breakfastMixed,
       int lunchMeat, int lunchVegetable, int lunchMixed,
-      int dinnerMeat, int dinnerVegetable, int dinnerMixed,
-      String url
+      int dinnerMeat, int dinnerVegetable, int dinnerMixed
   ) {
+    System.out.println(cycle);
+    System.out.println(breakfastVegetable);
+    System.out.println(breakfastMeat);
+    System.out.println(breakfastMixed);
+
+    System.out.println(lunchVegetable);
+    System.out.println(lunchMeat);
+    System.out.println(lunchMixed);
+
+    System.out.println(dinnerVegetable);
+    System.out.println(dinnerMeat);
+    System.out.println(dinnerMixed);
+
+    // TODO:后期添加类别
+    int breakfastNum = breakfastMeat + breakfastVegetable + breakfastMixed;
+    int lunchNum     = lunchMeat     + lunchVegetable     + lunchMixed;
+    int dinnerNum    = dinnerMeat    + dinnerVegetable    + dinnerMixed;
+
+    int vegetableLength = breakfastVegetable + lunchVegetable + dinnerVegetable;
+    int meatLength      = breakfastMeat + lunchMeat + dinnerMeat;
+    int mixedLength     = breakfastMixed + lunchMixed + dinnerMixed;
+
+    List<Dish> allVegetables = dishService.selectByCategory(Dish.VEGETABLE);
+    List<Dish> allMeats = dishService.selectByCategory(Dish.MEAT);
+    List<Dish> allMixed = dishService.selectByCategory(Dish.MIXED);
+
+    if (vegetableLength * cycle > allVegetables.size() ||
+        meatLength * cycle > allMeats.size() ||
+        mixedLength * cycle > allMixed.size()
+    ) {
+      // 循环周期大于总长度，直接rollback
+      System.out.println("rollback");
+      return "redirect:/index";
+    }
+
+    List<Date> dateBetween = myDateUtils.getDateBetween(start, end);
+    System.out.println(dateBetween);
+    for (Date date : dateBetween) {
+      // 获得前后三天
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(date);
+      cal.add(Calendar.DATE, -cycle);
+      // 开始获得set
+      Set<Integer> set = new HashSet<>();
+      for (int i = 0; i < cycle * 2; i++) {
+        List<Daily> dailies = dailyService.selectByDate(cal.getTime());
+        for (Daily daily : dailies) {
+          set.add(daily.getDish());
+        }
+        cal.add(Calendar.DATE, 1);
+      }
+      // 开始随机生成id
+      Random r = new Random(date.getTime()); // 这里有坑
+
+      // TODO: 后期添加类别
+      for (int i = 0; i < vegetableLength; i++) {
+        int idx = 0;
+        while (true) {
+          // 当id重复，在生成一个随机数
+          int num = r.nextInt(allVegetables.size());
+          int dishId = allVegetables.get(num).getId();
+          if (set.contains(dishId) && idx < 20) {
+            // 记录重复次数，重复次数过多认定没办法协调了
+            idx += 1;
+          } else {
+            int time;
+            if (i < breakfastVegetable) {
+              time = Daily.BREAKFAST;
+            } else if (i < breakfastVegetable + lunchVegetable) {
+              time = Daily.LUNCH;
+            } else {
+              time = Daily.DINNER;
+            }
+            Daily daily = new Daily(myDateToStringConverter.convert(date), time, dishId);
+            set.add(dishId);
+            dailyService.insert(daily);
+            break;
+          }
+        }
+      }
+
+      for (int i = 0; i < meatLength; i++) {
+        int idx = 0;
+        while (true) {
+          // 当id重复，在生成一个随机数
+          int num = r.nextInt(allMeats.size());
+          int dishId = allMeats.get(num).getId();
+          if (set.contains(dishId) && idx < 20) {
+            // 记录重复次数，重复次数过多认定没办法协调了
+            idx += 1;
+          } else {
+            int time;
+            if (i < breakfastMeat) {
+              time = Daily.BREAKFAST;
+            } else if (i < breakfastMeat + lunchMeat) {
+              time = Daily.LUNCH;
+            } else {
+              time = Daily.DINNER;
+            }
+            Daily daily = new Daily(myDateToStringConverter.convert(date), time, dishId);
+            set.add(dishId);
+            dailyService.insert(daily);
+            break;
+          }
+        }
+      }
+
+      for (int i = 0; i < mixedLength; i++) {
+        int idx = 0;
+        while (true) {
+          // 当id重复，在生成一个随机数
+          int num = r.nextInt(allMixed.size());
+          int dishId = allMixed.get(num).getId();
+          if (set.contains(dishId) && idx < 20) {
+            // 记录重复次数，重复次数过多认定没办法协调了
+            idx += 1;
+          } else {
+            int time;
+            if (i < breakfastMixed) {
+              time = Daily.BREAKFAST;
+            } else if (i < breakfastMixed + lunchMixed) {
+              time = Daily.LUNCH;
+            } else {
+              time = Daily.DINNER;
+            }
+            Daily daily = new Daily(myDateToStringConverter.convert(date), time, dishId);
+            set.add(dishId);
+            dailyService.insert(daily);
+            break;
+          }
+        }
+      }
+    }
 
 
-    return "redirect:/" + url;
+
+
+    return "redirect:/queryBetweenTwoDates?dateStart=" + start + "&dateEnd=" + end;
   }
+
+
 
 
 
