@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <div th:insert="commons/commons::head"></div>
 
-<body class="app app-404-page">   	
+<body class="app">
    
     <div class="container mb-5">
 	    <div class="row">
@@ -12,10 +12,16 @@
 	
 		        </div><!--//app-branding-->  
 			    <div class="app-card p-5 text-center shadow-sm">
-				    <h1 class="page-title mb-4">404<br><span class="font-weight-light">Page Not Found</span></h1>
+				    <h1 class="page-title mb-4">MASIJUN<br><span class="font-weight-light">Thanks for using</span></h1>
 				    <div class="mb-4">
-							Sorry, we can't find the page you're looking for.
+							<i class="phone icon"></i>17771878741
 				    </div>
+						<div class="mb-4">
+							<i class="wechat icon"></i>MASIJUN99
+						</div>
+						<div class="mb-4">
+							<i class="github icon"></i><a style="color:inherit" href="https://github.com/MASIJUN99">MASIJUN</a>
+						</div>
 				    <a class="btn app-btn-primary" th:href="@{/index}">返回首页</a>
 			    </div>
 		    </div><!--//col-->
@@ -31,7 +37,7 @@
     
     
 
-    
+    <div th:insert="commons/commons::foot"></div>
     
     <!-- Charts JS -->
     <script src="assets/plugins/chart.js/chart.min.js"></script> 

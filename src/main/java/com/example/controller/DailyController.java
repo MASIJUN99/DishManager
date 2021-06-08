@@ -325,6 +325,7 @@ public class DailyController {
 
   @RequestMapping("/queryBetweenTwoDates")
   public String randomBetweenTwoDates(String dateStart, String dateEnd, Model model) {
+    // 搞日期范围
     Date start = myStringToDateConverter.convert(dateStart);
     Date end = myStringToDateConverter.convert(dateEnd);
     Calendar cal = Calendar.getInstance();
@@ -337,7 +338,10 @@ public class DailyController {
     Recipe sum = new Recipe();
 
     // 一个及其复杂的map，我都不想解释，屎山
+    // 我来解释一下
     Map<String, Map<Integer, List<Dish>>> map = new TreeMap<>();
+    // 把人数也放进去
+    Map<String, Integer> numMap = new TreeMap<>();
     while (cal.before(stop)) {
 
       Recipe dailySum = new Recipe();
@@ -378,17 +382,23 @@ public class DailyController {
       }
       mapOfDay.put(Daily.DINNER, dinner);
       cal.add(Calendar.DATE, 1);
-      map.put(dateStr, mapOfDay);
 
       // 获取当日就餐人数，然后乘1/80，乘人数，加到总和sum上
       int num = dailyNumService.selectByDate(date).getNum();
       dailySum.mul(0.0125);
       dailySum.mul(num);
       sum.add(dailySum);
+
+      // 往里放
+      map.put(dateStr, mapOfDay);
+      // 把人数也放进去
+      numMap.put(dateStr, num);
+
     }
 
     System.out.println(map);
     model.addAttribute("maps", map);
+    model.addAttribute("numMap", numMap); // 把人数也放进去
     model.addAttribute("date", myDateToStringConverter.convert(new Date()));
     model.addAttribute("dateStart", dateStart);
     model.addAttribute("dateEnd", dateEnd);

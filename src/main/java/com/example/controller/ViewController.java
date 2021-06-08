@@ -91,7 +91,10 @@ public class ViewController {
   }
 
 
-
+  @RequestMapping("/auth")
+  public String auth() {
+    return "auth";
+  }
 
 
 
